@@ -2,11 +2,11 @@ name: Update Calendar
 run-name: Update Genshin Impact Birthday Calendar!🚀
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths: # 这里是用来指定哪个文件更改，才会触发的
-      - 'run.py'
+      - "run.py"
   schedule:
-    - cron: '0 4 * * */3'
+    - cron: "0 4 * * *"
   workflow_dispatch:
 jobs:
   Update-Calendar:
@@ -14,16 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup PDM
-        uses: pdm-project/setup-pdm@v3
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: |
-          pdm install
-          pdm fix
+        run: uv sync
 
       - name: Run script
-        run: pdm run run.py
+        run: uv run run.py
 
       - name: Submit Update
         run: |
