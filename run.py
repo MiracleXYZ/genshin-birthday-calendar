@@ -86,19 +86,25 @@ async def main():
         new_json_data = await request(
             f"https://gi.yatta.moe/api/v2/{LANGUAGE}/avatarFetter/{data['id']}"
         )
-        for i in [0 - j for j in range(1, 5)]:
-            try:
-                begin = date(now.year + i, data["birthday"][0], data["birthday"][1])
-                break
-            except ValueError:
-                continue
+        is_leap_birthday = data["birthday"][0] == 2 and data["birthday"][1] == 29
+        if is_leap_birthday:
+            begin = date(now.year, 2, 28)
+            rrule = Recur(freq=Frequency.YEARLY, bymonthday=[-1], bymonth=[2])
+        else:
+            for i in [0 - j for j in range(1, 5)]:
+                try:
+                    begin = date(now.year + i, data["birthday"][0], data["birthday"][1])
+                    break
+                except ValueError:
+                    continue
+            rrule = Recur(freq=Frequency.YEARLY)
         name = data["name"]
         # noinspection PyUnboundLocalVariable
         event = Event(
             summary=f"{name}的生日",
             dtstart=begin,
             duration=timedelta(days=1),
-            rrule=Recur(freq=Frequency.YEARLY),
+            rrule=rrule,
             status=EventStatus.CONFIRMED,
             transp="TRANSPARENT",
             url=Uri(f"https://wiki.biligame.com/ys/{data['name']}"),
