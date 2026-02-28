@@ -88,15 +88,10 @@ async def main():
         )
         is_leap_birthday = data["birthday"][0] == 2 and data["birthday"][1] == 29
         if is_leap_birthday:
-            begin = date(now.year, 2, 28)
+            begin = date(now.year - 1, 2, 28)
             rrule = Recur(freq=Frequency.YEARLY, bymonthday=[-1], bymonth=[2])
         else:
-            for i in [0 - j for j in range(1, 5)]:
-                try:
-                    begin = date(now.year + i, data["birthday"][0], data["birthday"][1])
-                    break
-                except ValueError:
-                    continue
+            begin = date(now.year - 1, data["birthday"][0], data["birthday"][1])
             rrule = Recur(freq=Frequency.YEARLY)
         name = data["name"]
         # noinspection PyUnboundLocalVariable
